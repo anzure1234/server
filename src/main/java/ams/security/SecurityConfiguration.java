@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(request -> request
                 .requestMatchers("/api/login").permitAll()
-                .requestMatchers("/admin/**").hasAnyRole(UserRole.SYSTEM_ADMIN.name(), UserRole.FA_MANAGER.name())
+                .requestMatchers("/admin/**").hasAnyRole(UserRole.SYSTEM_ADMIN.name(), UserRole.SYSTEM_ADMIN.name())
                 .anyRequest().authenticated()
         ).httpBasic().and().apply(new JWTFilterConfiguration(tokenProvider));
         return http.build();

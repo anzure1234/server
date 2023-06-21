@@ -1,7 +1,7 @@
 package ams.service.impl;
 
 import ams.repository.AccountRepository;
-import ams.model.entity.Account;
+import ams.model.entity.User;
 import ams.service.AccountService;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Optional<Account> findByAccount(String account) {
+    public Optional<User> findByAccount(String account) {
         return accountRepository.findByAccountIgnoreCase(account);
     }
 }

@@ -42,34 +42,11 @@ public final class SecurityUtil {
         return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.SYSTEM_ADMIN;
     }
 
-    public static boolean isFaManager() {
-        Optional<UserRole> userRoleOptional = getRoleCurrentUserLogin();
-        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.FA_MANAGER;
-    }
 
-    public static boolean isDeliveryManager() {
-        Optional<UserRole> userRoleOptional = getRoleCurrentUserLogin();
-        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.DELIVERY_MANAGER;
-    }
 
-    public static boolean isClassAdmin() {
+    public static boolean isCustomer() {
         Optional<UserRole> userRoleOptional = getRoleCurrentUserLogin();
-        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.CLASS_ADMIN;
-    }
-
-    public static boolean isRecruiter() {
-        Optional<UserRole> userRoleOptional = getRoleCurrentUserLogin();
-        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.RECRUITER;
-    }
-
-    public static boolean isTrainer() {
-        Optional<UserRole> userRoleOptional = getRoleCurrentUserLogin();
-        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.TRAINER;
-    }
-
-    public static boolean isTrainee() {
-        Optional<UserRole> userRoleOptional = getRoleCurrentUserLogin();
-        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.TRAINEE;
+        return userRoleOptional.isPresent() && userRoleOptional.get() == UserRole.CUSTOMER;
     }
 
     public static boolean isAnyRole(UserRole... userRoles) {
