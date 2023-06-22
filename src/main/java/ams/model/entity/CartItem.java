@@ -9,9 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class CartItem {
-    @Id
-    private String cartItemId;
+public class CartItem extends BaseEntity {
 
     private Integer quantity;
 

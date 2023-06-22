@@ -3,21 +3,22 @@ package ams.model.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class Product {
-    @Id
-    private String productId;
+public class Product extends BaseEntity {
 
     private String productName;
 
     private String productDescription;
 
-    private String price;
+    private Double price;
 
     private String quantityInStock;
 
@@ -28,5 +29,8 @@ public class Product {
 
     @ManyToOne
     private OrderDetail orderDetail;
+
+    @OneToMany(mappedBy = "product")
+    private List<CartItem> cartItemList;
 
 }

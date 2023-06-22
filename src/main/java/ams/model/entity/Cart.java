@@ -1,22 +1,21 @@
 package ams.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class Cart {
-    @Id
-    private String cartId;
-
+public class Cart extends BaseEntity {
 
     @OneToOne(mappedBy = "cart")
     private User user;
+
+    @OneToMany(mappedBy = "cart")
+    private List<CartItem> cartItemList;
 
 
 }

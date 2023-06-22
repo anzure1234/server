@@ -10,11 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class User {
-
-    @Id
-    private String userId;
-
+public class User extends BaseEntity {
     private String account;
     private String password;
 
@@ -28,10 +24,9 @@ public class User {
     private String address;
 
     @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    private List<Order> orderList;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id", referencedColumnName = "cartId")
+    @OneToOne
     private Cart cart;
 
 }

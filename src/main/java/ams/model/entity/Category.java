@@ -11,12 +11,9 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Category {
-    @Id
-    private String categoryId;
-
+public class Category extends BaseEntity {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
-    private List<Product> product;
+    private List<Product> productList;
 }

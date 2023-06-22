@@ -8,25 +8,22 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
+@Entity(name = "orders")
 @Getter
 @Setter
-@Table(name = "orders")
-public class Order {
-    @Id
-    private String orderId;
+public class Order extends BaseEntity {
 
     private LocalDate orderDate;
 
-    private Integer totalAmount;
+    private Double totalAmount;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne
     private User user;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderDetail> orderDetail;
-
+    private List<OrderDetail> orderDetailList;
 
 }

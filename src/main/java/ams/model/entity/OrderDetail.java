@@ -12,13 +12,11 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class OrderDetail {
-    @Id
-    private String orderDetailId;
+public class OrderDetail extends BaseEntity {
 
     private Integer quantity;
 
-    private Integer price;
+    private Double price;
 
     @ManyToOne
     private Order order;
