@@ -33,7 +33,7 @@ public class CategoryResource extends BaseResource{
 
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponseDto> createCategory(CategoryDto categoryDto){
+    public ResponseEntity<BaseResponseDto> createCategory(@RequestBody CategoryDto categoryDto){
         if (!SecurityUtil.isSystemAdmin()){
             return badRequest("Category.create.notSystemAdmin");
         }
