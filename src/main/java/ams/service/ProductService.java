@@ -1,4 +1,7 @@
 package ams.service;
 
-public interface ProductService {
+import ams.model.entity.Product;
+
+public interface ProductService extends BaseService<Product,Long>{
+
 }

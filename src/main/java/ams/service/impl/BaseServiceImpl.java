@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,11 +35,14 @@ public class BaseServiceImpl<T extends BaseEntity, ID extends Serializable, R ex
     @Override
     public T create(T model) {
         model.setDeleted(false);
+        model.setCreatedDate(LocalDateTime.now());
+        model.setLastModifiedDate(LocalDateTime.now());
         return repository.save(model);
     }
 
     @Override
     public T update(T model) {
+        model.setLastModifiedDate(LocalDateTime.now());
         return repository.save(model);
     }
 

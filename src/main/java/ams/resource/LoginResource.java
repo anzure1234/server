@@ -29,7 +29,7 @@ public class LoginResource {
     @PostMapping("/api/login")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginRequestDto.getUsername(),
+                loginRequestDto.getAccount(),
                 loginRequestDto.getPassword()
         );
 
@@ -40,7 +40,7 @@ public class LoginResource {
         String accessToken = tokenProvider.generateToken(authentication);
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .accessToken(accessToken)
-                .username(loginRequestDto.getUsername())
+                .account(loginRequestDto.getAccount())
                 .role(SecurityUtil.getRoleCurrentUserLogin().orElseThrow(RuntimeException::new).name())
                 .build();
         return ResponseEntity.ok(loginResponseDto);

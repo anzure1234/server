@@ -1,4 +1,9 @@
 package ams.service;
 
-public interface CategoryService {
+import ams.model.entity.Category;
+
+import java.util.Optional;
+
+public interface CategoryService extends BaseService<Category,Long>{
+    Optional<Category> findCategoryByName(String categoryName);
 }
