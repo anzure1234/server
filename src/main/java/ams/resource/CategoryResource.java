@@ -1,6 +1,7 @@
 package ams.resource;
 
 import ams.model.dto.BaseResponseDto;
+import ams.model.dto.CategoryDisplayDto;
 import ams.model.dto.CategoryDto;
 import ams.model.entity.Category;
 import ams.security.SecurityUtil;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,9 +29,27 @@ public class CategoryResource extends BaseResource{
         this.categoryService = categoryService;
     }
     @GetMapping
-        public ResponseEntity<BaseResponseDto> showAll(){
-        categoryService.findAll();
-        return success("Category.showAll.success");
+        public ResponseEntity<List<CategoryDisplayDto>> showAll(){
+        List<Category> categoryList=categoryService.findAll();
+        List<CategoryDisplayDto> listCategoryDisplayDto = new ArrayList<>();
+        for (Category category:categoryList) {
+            CategoryDisplayDto categoryDisplayDto = new CategoryDisplayDto();
+            BeanUtils.copyProperties(category, categoryDisplayDto);
+            listCategoryDisplayDto.add(categoryDisplayDto);
+
+        }
+        return ResponseEntity.ok(listCategoryDisplayDto);
+
+    }
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<CategoryDisplayDto> findById(@PathVariable Long categoryId){
+        Optional<Category> categoryOptional = categoryService.findOneOpt(categoryId);
+        if (categoryOptional.isPresent()){
+            CategoryDisplayDto categoryDisplayDto = new CategoryDisplayDto();
+            BeanUtils.copyProperties(categoryOptional.get(), categoryDisplayDto);
+            return ResponseEntity.ok(categoryDisplayDto);
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
@@ -44,12 +65,14 @@ public class CategoryResource extends BaseResource{
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<BaseResponseDto> updateCategory(@PathVariable Long categoryId, CategoryDto categoryDto){
+    public ResponseEntity<BaseResponseDto> updateCategory(@PathVariable Long categoryId,@RequestBody CategoryDto categoryDto){
         if (!SecurityUtil.isSystemAdmin()){
             return badRequest("Category.update.notSystemAdmin");
         }
         Optional<Category> categoryOptional = categoryService.findOneOpt(categoryId);
+
         Category category = categoryOptional.orElseThrow();
+        System.out.println(category);
         BeanUtils.copyProperties(categoryDto, category);
         categoryService.update(category);
         return success("Category.update.success");

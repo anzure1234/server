@@ -12,9 +12,8 @@ public class ProductDisplayDto {
 
     private Double price;
 
-    private String quantityInStock;
+    private Integer quantityInStock;
 
     private String image;
 
-    private String categoryName;
 }

@@ -12,7 +12,7 @@ public class ProductDto {
 
     private Double price;
 
-    private String quantityInStock;
+    private Integer quantityInStock;
 
     private String image;
 

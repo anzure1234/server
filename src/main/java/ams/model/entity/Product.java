@@ -20,7 +20,7 @@ public class Product extends BaseEntity {
 
     private Double price;
 
-    private String quantityInStock;
+    private Integer quantityInStock;
 
     private String image;
 

@@ -31,18 +31,18 @@ public class ProductResoure extends BaseResource {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<ProductDisplayDto> findById(@PathVariable Long id) {
         Optional<Product> productOptional = productService.findOneOpt(id);
         if (productOptional.isPresent()) {
             ProductDisplayDto productDisplayDtoDto = new ProductDisplayDto();
             BeanUtils.copyProperties(productOptional.get(), productDisplayDtoDto);
-            return success("Product.find.success");
+            return ResponseEntity.ok(productDisplayDtoDto);
         }
-        return notFound("Product.find.notFound");
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponseDto> createProduct(ProductDto productDto) {
+    public ResponseEntity<BaseResponseDto> createProduct(@RequestBody ProductDto productDto) {
         if (!SecurityUtil.isSystemAdmin()) {
             return badRequest("Product.create.notSystemAdmin");
         }
@@ -50,14 +50,14 @@ public class ProductResoure extends BaseResource {
         Optional<Category> categoryOptional = categoryService.findCategoryByName(productDto.getCategoryName());
         if (categoryOptional.isPresent()) {
             product.setCategory(categoryOptional.get());
+            BeanUtils.copyProperties(productDto, product);
+            productService.create(product);
         }
-        BeanUtils.copyProperties(productDto, product);
-        productService.create(product);
         return success("Product.create.success");
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<BaseResponseDto> updateProduct(@PathVariable Long productId, ProductDto productDto) {
+    public ResponseEntity<BaseResponseDto> updateProduct(@PathVariable Long productId,@RequestBody ProductDto productDto) {
         if (!SecurityUtil.isSystemAdmin()) {
             return badRequest("Product.update.notSystemAdmin");
         }
