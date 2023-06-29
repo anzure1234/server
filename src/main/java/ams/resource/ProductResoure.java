@@ -1,5 +1,6 @@
 package ams.resource;
 
+import ams.constant.AppConstant;
 import ams.model.dto.BaseResponseDto;
 import ams.model.dto.ProductDisplayDto;
 import ams.model.dto.ProductDto;
@@ -9,11 +10,21 @@ import ams.security.SecurityUtil;
 import ams.service.CategoryService;
 import ams.service.ProductService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RestController
@@ -27,7 +38,41 @@ public class ProductResoure extends BaseResource {
         this.categoryService = categoryService;
     }
 
+    @GetMapping
+    public ResponseEntity<BaseResponseDto> showAll(
+            @RequestParam(required = false, defaultValue = AppConstant.DEFAULT_PAGE_STR) Integer page,
+            @RequestParam(required = false, defaultValue = AppConstant.DEFAULT_PAGE_SIZE_STR) Integer size,
+            @RequestParam(required = false, name = "sort", defaultValue = AppConstant.DEFAULT_SORT_FIELD) List<String> sorts,
+            @RequestParam(required = false, name = "q") Optional<String> keywordOpt) {
 
+        List<Sort.Order> orders = new ArrayList<>();
+        for (String sortField : sorts) {
+            boolean isDesc = sortField.startsWith("-");
+            orders.add(isDesc ? Sort.Order.desc(sortField.substring(1)) : Sort.Order.asc(sortField));
+        }
+
+        Specification<Product> spec = (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("deleted"), false);
+        if (keywordOpt.isPresent()) {
+            Specification<Product> specByKeyWord = (root, query, criteriaBuilder) ->
+                    criteriaBuilder.or(
+                            criteriaBuilder.like(root.get("productName"), "%" + keywordOpt.get() + "%"),
+                            criteriaBuilder.like(root.get("productCode"), "%" + keywordOpt.get() + "%")
+                    );
+            spec = spec.and(specByKeyWord);
+        }
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(orders));
+        Page<Product> productPage = productService.findAll(spec, pageRequest);
+        List<ProductDisplayDto> productDisplayDtos = productPage.getContent().stream().map(product -> {
+            ProductDisplayDto productDisplayDto = new ProductDisplayDto();
+            BeanUtils.copyProperties(product, productDisplayDto);
+
+            return productDisplayDto;
+        }).collect(Collectors.toList());
+
+        Page<ProductDisplayDto> result = new PageImpl<>(productDisplayDtos, pageRequest, productPage.getTotalElements());
+        return success(result, "OK");
+    }
 
 
     @GetMapping("/{id}")
@@ -57,7 +102,7 @@ public class ProductResoure extends BaseResource {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<BaseResponseDto> updateProduct(@PathVariable Long productId,@RequestBody ProductDto productDto) {
+    public ResponseEntity<BaseResponseDto> updateProduct(@PathVariable Long productId, @RequestBody ProductDto productDto) {
         if (!SecurityUtil.isSystemAdmin()) {
             return badRequest("Product.update.notSystemAdmin");
         }
